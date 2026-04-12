@@ -1,0 +1,29 @@
+# Legacy jQuery version (local reference only)
+legacy/
+
+# Demo full-resolution originals (kept locally, not published)
+demo/assets/originals/
+
+# Claude Code local config
+.claude/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# Dependencies / build (in case of future npm packaging)
+node_modules/
+dist/
+coverage/
+package-lock.json
+yarn.lock
