@@ -198,7 +198,7 @@ jcrop-widget {
 
 ## Migration from JCrop 0.9
 
-VanillaJCrop provides a familiar API for users of the original JCrop:
+VanillaJCrop provides a familiar API for users of the original JCrop 0.9:
 
 | JCrop 0.9 | VanillaJCrop |
 |-----------|--------------|
@@ -238,4 +238,4 @@ MIT License - see [LICENSE](LICENSE) file.
 
 ## Credits
 
-Inspired by the original [JCrop](https://github.com/tapmodo/Jcrop) by Kelly Hallman (Tapmodo).
+Inspired by the original [JCrop 0.9](https://github.com/tapmodo/Jcrop) by Kelly Hallman (Tapmodo).
