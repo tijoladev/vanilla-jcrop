@@ -2,6 +2,10 @@
 
 A modern, dependency-free image cropping library. Drop-in replacement for the classic [JCrop 0.9](https://github.com/tapmodo/Jcrop) without jQuery.
 
+**[→ Live demo](https://tijoladev.github.io/vanilla-jcrop/demo/)**
+
+![VanillaJCrop preview](docs/screenshot-landscape.png)
+
 ## Features
 
 - **Zero dependencies** - Pure ES6+ JavaScript, no jQuery required
