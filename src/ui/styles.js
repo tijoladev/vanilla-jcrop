@@ -14,6 +14,11 @@ export const styles = `
   --jcrop-handle-radius: 0;
   --jcrop-focus-outline: 2px solid #4a90d9;
   --jcrop-transition-duration: 0ms;
+  --jcrop-grid-color: rgba(255, 255, 255, 0.35);
+  --jcrop-grid-width: 1px;
+  --jcrop-crosshair-color: rgba(255, 255, 255, 0.7);
+  --jcrop-crosshair-size: 12px;
+  --jcrop-crosshair-width: 1px;
 
   display: block;
   position: relative;
@@ -24,6 +29,20 @@ export const styles = `
 :host([disabled]) {
   pointer-events: none;
   opacity: 0.7;
+}
+
+/* Locked-size: hide resize handles, use default cursor on tracker */
+:host([no-resize]) .jcrop-handle {
+  display: none;
+}
+
+:host([no-resize]) .jcrop-tracker {
+  cursor: default;
+}
+
+/* Locked-position: neutralize the move cursor on the selection body */
+:host([no-move]) .jcrop-move-area {
+  cursor: default;
 }
 
 .jcrop-container {
@@ -156,6 +175,56 @@ export const styles = `
 .jcrop-handle[data-handle="sw"] { left: 0; top: 100%; cursor: sw-resize; }
 .jcrop-handle[data-handle="w"]  { left: 0; top: 50%; cursor: w-resize; }
 
+/* Grid overlay (rule-of-thirds) — hidden unless enabled on the host */
+.jcrop-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: none;
+  background-image:
+    linear-gradient(to right,
+      transparent calc(33.333% - var(--jcrop-grid-width) / 2),
+      var(--jcrop-grid-color) calc(33.333% - var(--jcrop-grid-width) / 2),
+      var(--jcrop-grid-color) calc(33.333% + var(--jcrop-grid-width) / 2),
+      transparent calc(33.333% + var(--jcrop-grid-width) / 2),
+      transparent calc(66.666% - var(--jcrop-grid-width) / 2),
+      var(--jcrop-grid-color) calc(66.666% - var(--jcrop-grid-width) / 2),
+      var(--jcrop-grid-color) calc(66.666% + var(--jcrop-grid-width) / 2),
+      transparent calc(66.666% + var(--jcrop-grid-width) / 2)),
+    linear-gradient(to bottom,
+      transparent calc(33.333% - var(--jcrop-grid-width) / 2),
+      var(--jcrop-grid-color) calc(33.333% - var(--jcrop-grid-width) / 2),
+      var(--jcrop-grid-color) calc(33.333% + var(--jcrop-grid-width) / 2),
+      transparent calc(33.333% + var(--jcrop-grid-width) / 2),
+      transparent calc(66.666% - var(--jcrop-grid-width) / 2),
+      var(--jcrop-grid-color) calc(66.666% - var(--jcrop-grid-width) / 2),
+      var(--jcrop-grid-color) calc(66.666% + var(--jcrop-grid-width) / 2),
+      transparent calc(66.666% + var(--jcrop-grid-width) / 2));
+}
+
+:host([grid]) .jcrop-grid {
+  display: block;
+}
+
+/* Crosshair (center marker) */
+.jcrop-crosshair {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--jcrop-crosshair-size);
+  height: var(--jcrop-crosshair-size);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  display: none;
+  background:
+    linear-gradient(var(--jcrop-crosshair-color), var(--jcrop-crosshair-color)) center/100% var(--jcrop-crosshair-width) no-repeat,
+    linear-gradient(var(--jcrop-crosshair-color), var(--jcrop-crosshair-color)) center/var(--jcrop-crosshair-width) 100% no-repeat;
+}
+
+:host([crosshair]) .jcrop-crosshair {
+  display: block;
+}
+
 /* Move zone (selection center) */
 .jcrop-move-area {
   position: absolute;
@@ -203,7 +272,9 @@ export const styles = `
 /* Hide elements when no selection */
 .jcrop-selection:not([data-visible="true"]),
 .jcrop-selection:not([data-visible="true"]) .jcrop-handle,
-.jcrop-selection:not([data-visible="true"]) .jcrop-border {
+.jcrop-selection:not([data-visible="true"]) .jcrop-border,
+.jcrop-selection:not([data-visible="true"]) .jcrop-grid,
+.jcrop-selection:not([data-visible="true"]) .jcrop-crosshair {
   display: none;
 }
 

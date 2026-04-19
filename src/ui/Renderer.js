@@ -54,7 +54,7 @@ export class Renderer {
     const shades = this._createShades(container);
 
     // Selection zone
-    const { selection, moveArea, handles } = this._createSelection(container);
+    const { selection, moveArea, grid, crosshair, handles } = this._createSelection(container);
 
     // Tracker (for creating new selection)
     const tracker = document.createElement('div');
@@ -77,6 +77,8 @@ export class Renderer {
       shades,
       selection,
       moveArea,
+      grid,
+      crosshair,
       handles,
       tracker,
       preview
@@ -119,6 +121,15 @@ export class Renderer {
     moveArea.className = 'jcrop-move-area';
     selection.appendChild(moveArea);
 
+    // Optional visual aids (grid, crosshair) — toggled via CSS on selection
+    const grid = document.createElement('div');
+    grid.className = 'jcrop-grid';
+    selection.appendChild(grid);
+
+    const crosshair = document.createElement('div');
+    crosshair.className = 'jcrop-crosshair';
+    selection.appendChild(crosshair);
+
     // Handles (8)
     const handles = {};
     for (const key of HANDLE_KEYS) {
@@ -130,7 +141,7 @@ export class Renderer {
     }
 
     container.appendChild(selection);
-    return { selection, moveArea, handles };
+    return { selection, moveArea, grid, crosshair, handles };
   }
 
   /**

@@ -15,7 +15,12 @@ import { KeyboardHandler } from './KeyboardHandler.js';
  */
 export class JCropWidget extends HTMLElement {
   static get observedAttributes() {
-    return ['src', 'ratio', 'min-width', 'min-height', 'max-width', 'max-height', 'disabled'];
+    return [
+      'src', 'ratio',
+      'min-width', 'min-height', 'max-width', 'max-height',
+      'disabled', 'grid', 'crosshair', 'no-move', 'no-resize',
+      'selection'
+    ];
   }
 
   constructor() {
@@ -76,7 +81,15 @@ export class JCropWidget extends HTMLElement {
         break;
 
       case 'disabled':
-        // Handled via CSS :host([disabled])
+      case 'grid':
+      case 'crosshair':
+      case 'no-move':
+      case 'no-resize':
+        // Purely declarative: consumed by CSS or by pointer gating at event time.
+        break;
+
+      case 'selection':
+        this._applySelectionAttribute();
         break;
 
       default:
@@ -251,6 +264,28 @@ export class JCropWidget extends HTMLElement {
     this._jcrop.updateDisplay();
 
     this._observeResize();
+    this._applySelectionAttribute();
+  }
+
+  /**
+   * Parses the `selection` attribute ("x,y,x2,y2" in image coords) and
+   * applies it to the current instance. No-op if attribute is absent,
+   * malformed, or the engine is not ready yet (will be re-applied after
+   * image load via _initJCrop).
+   * @private
+   */
+  _applySelectionAttribute() {
+    if (!this._jcrop) return;
+    const raw = this.getAttribute('selection');
+    if (!raw) return;
+    const parts = raw.split(',').map(s => Number(s.trim()));
+    if (parts.length !== 4 || parts.some(n => !Number.isFinite(n))) {
+      console.warn('[JCropWidget] invalid selection attribute, expected "x,y,x2,y2":', raw);
+      return;
+    }
+    const [x, y, x2, y2] = parts;
+    const rect = this._jcrop.toCanvas({ x, y, x2, y2 });
+    this._jcrop.setSelect(rect);
   }
 
   /**
@@ -351,6 +386,15 @@ export class JCropWidget extends HTMLElement {
           // Click outside zone
           return;
         }
+
+        const noMove = this.hasAttribute('no-move');
+        const noResize = this.hasAttribute('no-resize');
+
+        // Filter gestures per flag. `no-resize` also blocks new-draw since
+        // drawing sets a size; `no-move` only blocks dragging an existing box.
+        if (target.type === 'handle' && noResize) return;
+        if (target.type === 'selection' && noMove) return;
+        if (target.type === 'empty' && noResize) return;
 
         // Give focus to enable keyboard
         this._renderer.getContainer().focus();

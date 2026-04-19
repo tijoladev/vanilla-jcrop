@@ -1,6 +1,9 @@
 # Legacy jQuery version (local reference only)
 legacy/
 
+# Local reference repos
+references/
+
 # Demo full-resolution originals (kept locally, not published)
 demo/assets/originals/
 

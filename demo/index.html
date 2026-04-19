@@ -98,6 +98,19 @@
       border-color: #4a90d9;
     }
 
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      color: #555;
+    }
+
+    .checkbox-label input {
+      width: auto;
+    }
+
     .coords {
       background: #f8f8f8;
       border-radius: 4px;
@@ -228,6 +241,30 @@
         <input type="number" id="minHeight" value="50" min="0">
       </div>
 
+      <div class="control-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="opt-grid"> Grid (rule of thirds)
+        </label>
+      </div>
+
+      <div class="control-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="opt-crosshair"> Crosshair
+        </label>
+      </div>
+
+      <div class="control-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="opt-no-move"> Lock position (no-move)
+        </label>
+      </div>
+
+      <div class="control-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="opt-no-resize"> Lock size (no-resize)
+        </label>
+      </div>
+
       <h2>Selection</h2>
       <div class="coords" id="coords">
         <div><span>x:</span> <strong id="coord-x">-</strong></div>
@@ -312,6 +349,18 @@
     minHeightInput.addEventListener('input', () => {
       cropper.setAttribute('min-height', minHeightInput.value);
     });
+
+    // Toggleable boolean attributes
+    const toggleAttr = (checkbox, attr) => {
+      checkbox.addEventListener('change', () => {
+        if (checkbox.checked) cropper.setAttribute(attr, '');
+        else cropper.removeAttribute(attr);
+      });
+    };
+    toggleAttr(document.getElementById('opt-grid'), 'grid');
+    toggleAttr(document.getElementById('opt-crosshair'), 'crosshair');
+    toggleAttr(document.getElementById('opt-no-move'), 'no-move');
+    toggleAttr(document.getElementById('opt-no-resize'), 'no-resize');
 
     // Change image
     imageThumbs.forEach(thumb => {

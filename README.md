@@ -97,7 +97,12 @@ jcrop.release();
 | `min-height` | Minimum selection height (pixels) | `min-height="100"` |
 | `max-width` | Maximum selection width (pixels) | `max-width="500"` |
 | `max-height` | Maximum selection height (pixels) | `max-height="500"` |
-| `disabled` | Disable interaction | `disabled` |
+| `disabled` | Disable all interaction | `disabled` |
+| `selection` | Initial selection in image coords, as `x,y,x2,y2` | `selection="100,50,400,300"` |
+| `grid` | Show a rule-of-thirds grid inside the selection | `grid` |
+| `crosshair` | Show a centre crosshair inside the selection | `crosshair` |
+| `no-move` | Lock the selection position (drag disabled) | `no-move` |
+| `no-resize` | Lock the selection size (handles hidden, new-draw disabled) | `no-resize` |
 
 ## Web Component Events
 
@@ -155,6 +160,10 @@ jcrop.tellSelect();                   // Get selection in image coords
 jcrop.tellScaled();                   // Get selection in canvas coords
 jcrop.release();                      // Clear selection
 
+// Coordinate conversion (arbitrary rects)
+jcrop.toImage({ x, y, x2, y2 });      // Canvas coords → image coords
+jcrop.toCanvas({ x, y, x2, y2 });     // Image coords → canvas coords
+
 // Animation
 jcrop.isAnimating();                  // Check if animating
 jcrop.cancelAnimation();              // Stop animation
@@ -209,6 +218,15 @@ jcrop-widget {
   --jcrop-handle-color: #fff;
   --jcrop-handle-border: 2px solid #333;
   --jcrop-handle-radius: 2px;
+
+  /* Grid overlay (when `grid` attribute is set) */
+  --jcrop-grid-color: rgba(255, 255, 255, 0.35);
+  --jcrop-grid-width: 1px;
+
+  /* Centre crosshair (when `crosshair` attribute is set) */
+  --jcrop-crosshair-color: rgba(255, 255, 255, 0.7);
+  --jcrop-crosshair-size: 12px;
+  --jcrop-crosshair-width: 1px;
 }
 ```
 

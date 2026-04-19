@@ -1,0 +1,36 @@
+{
+  "name": "vanilla-jcrop",
+  "version": "0.2.0",
+  "description": "Modern, dependency-free image cropping library. Drop-in replacement for JCrop 0.9 without jQuery.",
+  "type": "module",
+  "main": "src/index.js",
+  "module": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./src/": "./src/"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "crop",
+    "image-crop",
+    "jcrop",
+    "web-component",
+    "custom-element",
+    "vanilla",
+    "no-jquery"
+  ],
+  "author": "tijoladev",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tijoladev/vanilla-jcrop.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tijoladev/vanilla-jcrop/issues"
+  },
+  "homepage": "https://github.com/tijoladev/vanilla-jcrop#readme"
+}

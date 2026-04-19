@@ -3,6 +3,14 @@ import { PreselectionManager } from './managers/PreselectionManager.js';
 import { DisplayManager } from './managers/DisplayManager.js';
 import { MIN_DIMENSION } from './utils/constants.js';
 
+function scaleRect(rect, sx, sy) {
+  const x = rect.x * sx;
+  const y = rect.y * sy;
+  const x2 = rect.x2 * sx;
+  const y2 = rect.y2 * sy;
+  return { x, y, x2, y2, w: x2 - x, h: y2 - y };
+}
+
 /**
  * JCrop configuration options.
  * @typedef {Object} JCropOptions
@@ -104,6 +112,32 @@ export default class JCrop {
   release() {
     this._ensureNotDisposed();
     this.selectionManager.release();
+  }
+
+  /**
+   * Converts a canvas-space rect to image-space coordinates.
+   * Useful for reading arbitrary points/boxes (e.g. an overlay's position)
+   * in the image's native coordinate system.
+   * @param {{x: number, y: number, x2: number, y2: number}} rect
+   * @returns {{x: number, y: number, x2: number, y2: number, w: number, h: number}}
+   */
+  toImage(rect) {
+    this._ensureNotDisposed();
+    const { canvasWidth, canvasHeight, imageWidth, imageHeight } = this.options;
+    return scaleRect(rect, imageWidth / canvasWidth, imageHeight / canvasHeight);
+  }
+
+  /**
+   * Converts an image-space rect to canvas-space coordinates.
+   * Useful for projecting backend-provided regions (e.g. face boxes) onto
+   * the displayed widget.
+   * @param {{x: number, y: number, x2: number, y2: number}} rect
+   * @returns {{x: number, y: number, x2: number, y2: number, w: number, h: number}}
+   */
+  toCanvas(rect) {
+    this._ensureNotDisposed();
+    const { canvasWidth, canvasHeight, imageWidth, imageHeight } = this.options;
+    return scaleRect(rect, canvasWidth / imageWidth, canvasHeight / imageHeight);
   }
 
   // ─────────────────────────────────────────────────────────────────
