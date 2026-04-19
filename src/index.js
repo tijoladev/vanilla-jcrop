@@ -325,8 +325,14 @@ export default class JCrop {
 
   /** @private */
   _updateManagerOptions(newOptions) {
-    // SelectionManager
-    const selectionKeys = ['canvasWidth', 'canvasHeight', 'imageWidth', 'imageHeight', 'fadeTime'];
+    // SelectionManager: canvas size rescales stored coords; other fields are direct.
+    if (newOptions.canvasWidth !== undefined || newOptions.canvasHeight !== undefined) {
+      this.selectionManager.setCanvasSize(
+        this.options.canvasWidth,
+        this.options.canvasHeight
+      );
+    }
+    const selectionKeys = ['imageWidth', 'imageHeight', 'fadeTime'];
     for (const key of selectionKeys) {
       if (newOptions[key] !== undefined) {
         this.selectionManager[key] = this.options[key];

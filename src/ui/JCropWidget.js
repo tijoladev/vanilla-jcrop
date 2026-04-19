@@ -35,6 +35,9 @@ export class JCropWidget extends HTMLElement {
     /** @type {KeyboardHandler|null} */
     this._keyboardHandler = null;
 
+    /** @type {ResizeObserver|null} */
+    this._resizeObserver = null;
+
     /** @private Source image dimensions */
     this._imageSize = { width: 0, height: 0 };
 
@@ -164,6 +167,11 @@ export class JCropWidget extends HTMLElement {
    * Cleans up all resources.
    */
   destroy() {
+    if (this._resizeObserver) {
+      this._resizeObserver.disconnect();
+      this._resizeObserver = null;
+    }
+
     if (this._pointerHandler) {
       this._pointerHandler.dispose();
       this._pointerHandler = null;
@@ -241,6 +249,33 @@ export class JCropWidget extends HTMLElement {
 
     // Force initial render
     this._jcrop.updateDisplay();
+
+    this._observeResize();
+  }
+
+  /**
+   * Watches the container size and syncs canvas dimensions on change.
+   * Required for responsive hosts (max-width, viewport resize, etc.)
+   * so selection mapping stays correct after layout changes.
+   * @private
+   */
+  _observeResize() {
+    if (typeof ResizeObserver === 'undefined' || !this._renderer) return;
+
+    if (this._resizeObserver) {
+      this._resizeObserver.disconnect();
+    }
+
+    this._resizeObserver = new ResizeObserver(() => {
+      if (!this._jcrop) return;
+      const { width, height } = this._renderer.getContainerSize();
+      if (width < 1 || height < 1) return;
+      const { canvasWidth, canvasHeight } = this._jcrop.options;
+      if (width === canvasWidth && height === canvasHeight) return;
+      this._jcrop.setOptions({ canvasWidth: width, canvasHeight: height });
+    });
+
+    this._resizeObserver.observe(this._renderer.getContainer());
   }
 
   /**

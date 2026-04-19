@@ -166,6 +166,30 @@ jcrop.setOptions({ ratio: 1 });       // Update options at runtime
 jcrop.dispose();                      // Destroy instance
 ```
 
+## Sizing / Responsive
+
+The widget is a `display: block` element. Style the **host** (`<jcrop-widget>`), not the internal `<img>` — the image lives inside a Shadow DOM and is intentionally not reachable from outside CSS.
+
+The internal image uses `max-width: 100%; height: auto;`, so it scales to fit the host width while preserving its aspect ratio. To display an image of unknown dimensions constrained to the viewport:
+
+```css
+jcrop-widget {
+  display: block;
+  max-width: 90vw;
+  margin: 0 auto;
+}
+
+/* Or fit within a specific container */
+.crop-pane {
+  max-width: 600px;
+}
+.crop-pane jcrop-widget {
+  width: 100%;
+}
+```
+
+The widget observes its own size via `ResizeObserver` and automatically recomputes coordinate mapping when the host is resized (window resize, container reflow, etc.), so selections stay aligned.
+
 ## CSS Theming
 
 Customize the appearance using CSS custom properties:

@@ -105,6 +105,37 @@ export class SelectionManager extends EventEmitter {
   }
 
   /**
+   * Updates canvas dimensions while preserving the selection in image space.
+   * Rescales internal canvas-space coords so the selection tracks the image
+   * when the widget is resized (e.g. window resize, responsive layouts).
+   * @param {number} width
+   * @param {number} height
+   */
+  setCanvasSize(width, height) {
+    const newW = normalizeNumber(width, MIN_DIMENSION, MIN_DIMENSION);
+    const newH = normalizeNumber(height, MIN_DIMENSION, MIN_DIMENSION);
+    const oldW = this.canvasWidth;
+    const oldH = this.canvasHeight;
+
+    if (newW === oldW && newH === oldH) return;
+
+    const sx = newW / oldW;
+    const sy = newH / oldH;
+    const c = this._coords;
+    this._coords = {
+      x: c.x * sx,
+      y: c.y * sy,
+      x2: c.x2 * sx,
+      y2: c.y2 * sy,
+      w: c.w * sx,
+      h: c.h * sy
+    };
+
+    this.canvasWidth = newW;
+    this.canvasHeight = newH;
+  }
+
+  /**
    * Animates the selection to a target rectangle.
    * @param {{x: number, y: number, x2: number, y2: number}} target
    * @param {Function} [callback] - Called at the end of the animation
