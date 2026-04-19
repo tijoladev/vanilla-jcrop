@@ -263,6 +263,7 @@ export const styles = `
 /* Preview state during drag */
 .jcrop-preview {
   position: absolute;
+  box-sizing: border-box;
   border: 2px solid rgba(255, 255, 255, 0.5);
   background-color: rgba(255, 255, 255, 0.1);
   pointer-events: none;

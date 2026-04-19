@@ -265,6 +265,11 @@
         </label>
       </div>
 
+      <div class="control-group">
+        <label for="opt-selection">Selection attribute (image coords)</label>
+        <input type="text" id="opt-selection" placeholder="x,y,x2,y2 — e.g. 300,200,900,500">
+      </div>
+
       <h2>Selection</h2>
       <div class="coords" id="coords">
         <div><span>x:</span> <strong id="coord-x">-</strong></div>
@@ -361,6 +366,18 @@
     toggleAttr(document.getElementById('opt-crosshair'), 'crosshair');
     toggleAttr(document.getElementById('opt-no-move'), 'no-move');
     toggleAttr(document.getElementById('opt-no-resize'), 'no-resize');
+
+    // Apply `selection` attribute on blur / Enter
+    const selectionInput = document.getElementById('opt-selection');
+    const applySelection = () => {
+      const val = selectionInput.value.trim();
+      if (val) cropper.setAttribute('selection', val);
+      else cropper.removeAttribute('selection');
+    };
+    selectionInput.addEventListener('change', applySelection);
+    selectionInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); applySelection(); }
+    });
 
     // Change image
     imageThumbs.forEach(thumb => {
