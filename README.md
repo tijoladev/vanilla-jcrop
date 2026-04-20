@@ -186,21 +186,27 @@ jcrop.dispose();                      // Destroy instance
 
 The widget is a `display: block` element. Style the **host** (`<jcrop-widget>`), not the internal `<img>` — the image lives inside a Shadow DOM and is intentionally not reachable from outside CSS.
 
-The internal image uses `max-width: 100%; height: auto;`, so it scales to fit the host width while preserving its aspect ratio. To display an image of unknown dimensions constrained to the viewport:
+Once the image loads, the host's `aspect-ratio` is set to the image's natural ratio. This lets the browser honour **both** `max-width` and `max-height` on the host: whichever constraint is tighter wins, and the other dimension shrinks proportionally. Examples:
 
 ```css
+/* Constrain by width */
 jcrop-widget {
   display: block;
   max-width: 90vw;
   margin: 0 auto;
 }
 
-/* Or fit within a specific container */
-.crop-pane {
-  max-width: 600px;
+/* Constrain by height (useful when vertical space is the real limit) */
+jcrop-widget {
+  display: block;
+  max-height: 400px;
 }
-.crop-pane jcrop-widget {
-  width: 100%;
+
+/* Constrain by both — the host picks the fitting size automatically */
+jcrop-widget {
+  display: block;
+  max-width: 600px;
+  max-height: 400px;
 }
 ```
 

@@ -24,6 +24,12 @@ export const styles = `
   position: relative;
   user-select: none;
   touch-action: none;
+
+  /* Set from JS once the image loads (naturalWidth / naturalHeight). Lets the
+     browser honour both max-width and max-height on the host: the host is
+     shaped to the image's aspect ratio, so height constraints shrink the
+     width proportionally instead of letting the image overflow. */
+  aspect-ratio: var(--jcrop-aspect-ratio, auto);
 }
 
 :host([disabled]) {
@@ -57,11 +63,14 @@ export const styles = `
   outline-offset: 2px;
 }
 
-/* Source image */
+/* Source image — fills the container exactly. The container's shape matches
+   the image's natural aspect ratio (via aspect-ratio on :host), so this is
+   safe: no distortion, no letterbox, and the cropper's coord math stays
+   aligned with the pixels the user sees. */
 .jcrop-image {
   display: block;
-  max-width: 100%;
-  height: auto;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
 }
 

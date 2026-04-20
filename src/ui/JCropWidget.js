@@ -219,6 +219,12 @@ export class JCropWidget extends HTMLElement {
 
     try {
       this._imageSize = await this._renderer.setImage(src);
+      // Propagate the image's aspect ratio to the host so CSS max-height
+      // constraints are honoured alongside max-width.
+      this.style.setProperty(
+        '--jcrop-aspect-ratio',
+        `${this._imageSize.width} / ${this._imageSize.height}`
+      );
       this._initJCrop();
     } catch (error) {
       console.error('[JCropWidget]', error.message);
