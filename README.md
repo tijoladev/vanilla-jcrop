@@ -103,6 +103,7 @@ jcrop.release();
 | `crosshair` | Show a centre crosshair inside the selection | `crosshair` |
 | `no-move` | Lock the selection position (drag disabled) | `no-move` |
 | `no-resize` | Lock the selection size (handles hidden, new-draw disabled) | `no-resize` |
+| `outside-click` | What a click on empty area does: `release` (default) clears the selection, `ignore` leaves it untouched | `outside-click="ignore"` |
 
 ## Web Component Events
 

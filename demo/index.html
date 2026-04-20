@@ -266,6 +266,14 @@
       </div>
 
       <div class="control-group">
+        <label for="opt-outside-click">Outside click</label>
+        <select id="opt-outside-click">
+          <option value="release" selected>Release selection (default)</option>
+          <option value="ignore">Ignore</option>
+        </select>
+      </div>
+
+      <div class="control-group">
         <label for="opt-selection">Selection attribute (image coords)</label>
         <input type="text" id="opt-selection" placeholder="x,y,x2,y2 — e.g. 300,200,900,500">
       </div>
@@ -366,6 +374,13 @@
     toggleAttr(document.getElementById('opt-crosshair'), 'crosshair');
     toggleAttr(document.getElementById('opt-no-move'), 'no-move');
     toggleAttr(document.getElementById('opt-no-resize'), 'no-resize');
+
+    const outsideClickSelect = document.getElementById('opt-outside-click');
+    outsideClickSelect.addEventListener('change', () => {
+      const val = outsideClickSelect.value;
+      if (val === 'release') cropper.removeAttribute('outside-click');
+      else cropper.setAttribute('outside-click', val);
+    });
 
     // Apply `selection` attribute on blur / Enter
     const selectionInput = document.getElementById('opt-selection');

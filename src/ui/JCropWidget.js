@@ -19,7 +19,7 @@ export class JCropWidget extends HTMLElement {
       'src', 'ratio',
       'min-width', 'min-height', 'max-width', 'max-height',
       'disabled', 'grid', 'crosshair', 'no-move', 'no-resize',
-      'selection'
+      'selection', 'outside-click'
     ];
   }
 
@@ -85,6 +85,7 @@ export class JCropWidget extends HTMLElement {
       case 'crosshair':
       case 'no-move':
       case 'no-resize':
+      case 'outside-click':
         // Purely declarative: consumed by CSS or by pointer gating at event time.
         break;
 
@@ -380,6 +381,11 @@ export class JCropWidget extends HTMLElement {
   _setupPointerHandler() {
     if (!this._renderer) return;
 
+    // Per-gesture state tracked between pointerdown and pointerup so
+    // `onEnd` can tell a plain click apart from a drag (threshold-based).
+    const CLICK_THRESHOLD_PX = 3;
+    let gesture = null;
+
     this._pointerHandler = new PointerHandler({
       element: this._renderer.getContainer(),
       renderer: this._renderer,
@@ -405,6 +411,8 @@ export class JCropWidget extends HTMLElement {
         this._renderer.getContainer().focus();
 
         this._renderer.setTrackerActive(true);
+
+        gesture = { startX: x, startY: y, targetType: target.type, moved: false };
 
         if (target.type === 'handle') {
           this._jcrop.startPreselection({
@@ -432,6 +440,14 @@ export class JCropWidget extends HTMLElement {
       onMove: ({ x, y }) => {
         if (!this._jcrop || !this._jcrop.isPreselectionActive()) return;
 
+        if (gesture && !gesture.moved) {
+          const dx = x - gesture.startX;
+          const dy = y - gesture.startY;
+          if (dx * dx + dy * dy > CLICK_THRESHOLD_PX * CLICK_THRESHOLD_PX) {
+            gesture.moved = true;
+          }
+        }
+
         const result = this._jcrop.updatePreselection({
           currentX: x,
           currentY: y
@@ -454,9 +470,25 @@ export class JCropWidget extends HTMLElement {
         this._renderer.setTrackerActive(false);
         this._renderer.showPreview(null);
 
+        // Click on empty area without meaningful movement: cancel the stub
+        // preselection and optionally release the existing selection,
+        // per `outside-click` policy ('release' default, 'ignore' opt-out).
+        if (gesture && gesture.targetType === 'empty' && !gesture.moved) {
+          this._jcrop.cancelPreselection();
+          if (this.getAttribute('outside-click') !== 'ignore') {
+            const current = this._jcrop.tellScaled();
+            if (current.w > 0 && current.h > 0) {
+              this._jcrop.release();
+            }
+          }
+          gesture = null;
+          return;
+        }
+
         if (this._jcrop.isPreselectionActive()) {
           this._jcrop.finalizePreselection();
         }
+        gesture = null;
       },
 
       onCancel: () => {
@@ -465,6 +497,7 @@ export class JCropWidget extends HTMLElement {
         this._renderer.setTrackerActive(false);
         this._renderer.showPreview(null);
         this._jcrop.cancelPreselection();
+        gesture = null;
       }
     });
   }
