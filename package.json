@@ -1,6 +1,6 @@
 {
   "name": "vanilla-jcrop",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Modern, dependency-free image cropping library. Drop-in replacement for JCrop 0.9 without jQuery.",
   "type": "module",
   "main": "src/index.js",
