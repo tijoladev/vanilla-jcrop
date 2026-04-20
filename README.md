@@ -6,6 +6,12 @@ A modern, dependency-free image cropping library. Drop-in replacement for the cl
 
 ![VanillaJCrop preview](docs/screenshot-landscape.png)
 
+## Philosophy
+
+VanillaJCrop is deliberately **simple and opinionated**: one selection, the eight classic handles, sane defaults. It targets the standard crop use cases — avatar pickers, thumbnails, photo cropping, aspect-ratio-locked boxes — and stops there.
+
+If you need rotation, free transforms, multi-crop, canvas export with filters, or deep template overrides, reach for [CropperJS](https://github.com/fengyuanchen/cropperjs) instead — it already does that well. VanillaJCrop's value proposition is the **opposite**: a small, readable codebase with a minimal public API that you can drop in and forget about.
+
 ## Features
 
 - **Zero dependencies** - Pure ES6+ JavaScript, no jQuery required
@@ -15,6 +21,8 @@ A modern, dependency-free image cropping library. Drop-in replacement for the cl
 - **Keyboard navigation** - Arrow keys to move selection, Escape to cancel
 - **Aspect ratio** - Lock to any ratio (16:9, 4:3, 1:1, etc.)
 - **Size constraints** - Set minimum and maximum dimensions
+- **Visual aids** - Opt-in rule-of-thirds grid and centre crosshair
+- **UX locks** - Granular control: lock position, lock size, configurable outside-click release
 - **Animations** - Smooth animated transitions between selections
 - **Themeable** - Customize appearance via CSS custom properties
 - **Shadow DOM** - Encapsulated styles that won't conflict with your page
@@ -228,6 +236,13 @@ jcrop-widget {
   --jcrop-crosshair-color: rgba(255, 255, 255, 0.7);
   --jcrop-crosshair-size: 12px;
   --jcrop-crosshair-width: 1px;
+
+  /* Keyboard focus ring on the crop container */
+  --jcrop-focus-outline: 2px solid #4a90d9;
+
+  /* Transition applied to the selection / shade on programmatic moves
+     (0ms by default for snappy drag; raise it to animate setSelect calls) */
+  --jcrop-transition-duration: 0ms;
 }
 ```
 
