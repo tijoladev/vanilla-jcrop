@@ -231,8 +231,13 @@ export class JCropWidget extends HTMLElement {
    * @private
    */
   _initJCrop() {
-    // Clean up previous instance
+    // Clean up previous instance. If it held a selection, notify consumers
+    // before disposal — the new image has no logical relation to the old coords.
     if (this._jcrop) {
+      const had = this._jcrop.tellScaled();
+      if (had.w > 0 && had.h > 0) {
+        this._onSelectionRelease();
+      }
       this._jcrop.dispose();
     }
 

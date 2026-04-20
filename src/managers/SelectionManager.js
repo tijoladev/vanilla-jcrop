@@ -59,6 +59,9 @@ export class SelectionManager extends EventEmitter {
       return;
     }
 
+    // Prevent a running animation from overwriting the new position asynchronously.
+    this.cancelAnimation();
+
     const { x, y, x2, y2 } = rect;
     const minX = Math.min(x, x2);
     const minY = Math.min(y, y2);

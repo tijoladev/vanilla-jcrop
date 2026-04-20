@@ -288,8 +288,20 @@ export default class JCrop {
    * @private
    */
   _validateOptions(opts) {
+    // Ratio: accept a strictly positive finite number, otherwise null (free).
+    let ratio = null;
+    if (opts.ratio !== null && opts.ratio !== undefined) {
+      const r = Number(opts.ratio);
+      if (Number.isFinite(r) && r > 0) {
+        ratio = r;
+      } else {
+        console.warn('[JCrop] ignoring invalid ratio (expected a positive number):', opts.ratio);
+      }
+    }
+
     return {
       ...opts,
+      ratio,
       canvasWidth: Math.max(opts.canvasWidth || MIN_DIMENSION, MIN_DIMENSION),
       canvasHeight: Math.max(opts.canvasHeight || MIN_DIMENSION, MIN_DIMENSION),
       imageWidth: Math.max(opts.imageWidth || MIN_DIMENSION, MIN_DIMENSION),
