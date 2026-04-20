@@ -1,17 +1,19 @@
 import { EventEmitter } from '../utils/EventEmitter.js';
-import { RelativePosition, HANDLE_KEYS, Z_INDEX } from '../utils/constants.js';
+import { Z_INDEX } from '../utils/constants.js';
 
 /**
  * Aggregates display data from SelectionManager and PreselectionManager.
  * Emits the 'display:update' event on each change.
+ *
+ * Handle visuals are driven by CSS (`--jcrop-handle-size`) and their
+ * hit-testing uses the real DOM bounding rects, so no handle geometry
+ * is computed here.
  */
 export class DisplayManager extends EventEmitter {
   /**
    * @param {Object} options
    * @param {SelectionManager} options.selectionManager
    * @param {PreselectionManager} options.preselectionManager
-   * @param {number} [options.handleWidth=10]
-   * @param {number} [options.handleHeight=10]
    * @param {number} options.canvasWidth
    * @param {number} options.canvasHeight
    */
@@ -19,8 +21,6 @@ export class DisplayManager extends EventEmitter {
     super();
     this.selectionManager = options.selectionManager;
     this.preselectionManager = options.preselectionManager;
-    this.handleWidth = options.handleWidth || 10;
-    this.handleHeight = options.handleHeight || 10;
     this.canvasWidth = options.canvasWidth;
     this.canvasHeight = options.canvasHeight;
 
@@ -48,8 +48,7 @@ export class DisplayManager extends EventEmitter {
   computeDisplayData() {
     return {
       selection: this._computeSelection(),
-      ...this._computePreselection(),
-      handles: this._computeHandles()
+      ...this._computePreselection()
     };
   }
 
@@ -154,28 +153,6 @@ export class DisplayManager extends EventEmitter {
       height: Math.abs(rect.y2 - rect.y),
       zIndex
     };
-  }
-
-  /**
-   * @private
-   */
-  _computeHandles() {
-    const sel = this.selectionManager.tellScaled();
-    const handles = {};
-
-    for (const key of HANDLE_KEYS) {
-      const center = RelativePosition.toCoords(key, sel);
-      handles[key] = {
-        id: `handle-${key}`,
-        x: center.x - this.handleWidth / 2,
-        y: center.y - this.handleHeight / 2,
-        width: this.handleWidth,
-        height: this.handleHeight,
-        zIndex: Z_INDEX.HANDLES
-      };
-    }
-
-    return handles;
   }
 }
 

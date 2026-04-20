@@ -24,8 +24,6 @@ function scaleRect(rect, sx, sy) {
  * @property {number} [maxWidth=Infinity] - Maximum selection width
  * @property {number} [maxHeight=Infinity] - Maximum selection height
  * @property {number|null} [ratio=null] - Forced width/height ratio
- * @property {number} [handleWidth=10] - Handle width
- * @property {number} [handleHeight=10] - Handle height
  * @property {Function} [onChange] - Callback on each change
  * @property {Function} [onSelect] - Callback at selection end
  * @property {Function} [onRelease] - Callback on release
@@ -310,8 +308,6 @@ export default class JCrop {
       minHeight: Math.max(opts.minHeight || 0, 0),
       maxWidth: opts.maxWidth || Infinity,
       maxHeight: opts.maxHeight || Infinity,
-      handleWidth: Math.max(opts.handleWidth || 1, 1),
-      handleHeight: Math.max(opts.handleHeight || 1, 1),
       fadeTime: Math.max(opts.fadeTime || 0, 0)
     };
   }
@@ -344,8 +340,6 @@ export default class JCrop {
     this.displayManager = new DisplayManager({
       selectionManager: this.selectionManager,
       preselectionManager: this.preselectionManager,
-      handleWidth: opts.handleWidth,
-      handleHeight: opts.handleHeight,
       canvasWidth: opts.canvasWidth,
       canvasHeight: opts.canvasHeight
     });
@@ -405,7 +399,7 @@ export default class JCrop {
     }
 
     // DisplayManager
-    const displayKeys = ['handleWidth', 'handleHeight', 'canvasWidth', 'canvasHeight'];
+    const displayKeys = ['canvasWidth', 'canvasHeight'];
     for (const key of displayKeys) {
       if (newOptions[key] !== undefined) {
         this.displayManager[key] = this.options[key];
@@ -531,13 +525,11 @@ JCrop.defaults = Object.freeze({
   imageWidth: 1600,
   imageHeight: 1200,
   fadeTime: 400,
-  minWidth: 50,
-  minHeight: 50,
+  minWidth: 0,
+  minHeight: 0,
   maxWidth: Infinity,
   maxHeight: Infinity,
   ratio: null,
-  handleWidth: 10,
-  handleHeight: 10,
   onChange: null,
   onSelect: null,
   onRelease: null,

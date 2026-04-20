@@ -148,13 +148,11 @@ widget.destroy();
 | `imageWidth` | number | 1600 | Actual image width |
 | `imageHeight` | number | 1200 | Actual image height |
 | `ratio` | number\|null | null | Aspect ratio (width/height), null for free |
-| `minWidth` | number | 50 | Minimum selection width |
-| `minHeight` | number | 50 | Minimum selection height |
+| `minWidth` | number | 0 | Minimum selection width (0 = no constraint) |
+| `minHeight` | number | 0 | Minimum selection height (0 = no constraint) |
 | `maxWidth` | number | Infinity | Maximum selection width |
 | `maxHeight` | number | Infinity | Maximum selection height |
 | `fadeTime` | number | 400 | Animation duration in ms |
-| `handleWidth` | number | 10 | Handle width in pixels |
-| `handleHeight` | number | 10 | Handle height in pixels |
 | `onChange` | function | null | Callback during selection changes |
 | `onSelect` | function | null | Callback when selection is finalized |
 | `onRelease` | function | null | Callback when selection is released |
