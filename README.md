@@ -1,6 +1,6 @@
 # VanillaJCrop
 
-A modern, dependency-free image cropping library. Drop-in replacement for the classic [JCrop 0.9](https://github.com/tapmodo/Jcrop) without jQuery.
+**VanillaJCrop** is a modern, dependency-free **JavaScript image cropping library** — a drop-in **image cropper** delivered as a Web Component. Replacement for the classic [JCrop 0.9](https://github.com/tapmodo/Jcrop) without jQuery.
 
 **[→ Live demo](https://tijoladev.github.io/vanilla-jcrop/demo/)**
 
@@ -8,7 +8,7 @@ A modern, dependency-free image cropping library. Drop-in replacement for the cl
 
 ## Philosophy
 
-VanillaJCrop is deliberately **simple and opinionated**: one selection, the eight classic handles, sane defaults. It targets the standard crop use cases — avatar pickers, thumbnails, photo cropping, aspect-ratio-locked boxes — and stops there.
+VanillaJCrop is deliberately **simple and opinionated**: one selection, the eight classic handles, sane defaults. It targets the standard crop use cases — avatar pickers, thumbnails, aspect-ratio-locked boxes — and stops there.
 
 If you need rotation, free transforms, multi-crop, canvas export with filters, or deep template overrides, reach for [CropperJS](https://github.com/fengyuanchen/cropperjs) instead — it already does that well. VanillaJCrop's value proposition is the **opposite**: a small, readable codebase with a minimal public API that you can drop in and forget about.
 
@@ -21,7 +21,7 @@ If you need rotation, free transforms, multi-crop, canvas export with filters, o
 - **Keyboard navigation** - Arrow keys to move selection, Escape to cancel
 - **Aspect ratio** - Lock to any ratio (16:9, 4:3, 1:1, etc.)
 - **Size constraints** - Set minimum and maximum dimensions
-- **Visual aids** - Opt-in rule-of-thirds grid and centre crosshair
+- **Visual aids** - Opt-in rule-of-thirds grid and centre crosshair, useful for photo cropping composition
 - **UX locks** - Granular control: lock position, lock size, configurable outside-click release
 - **Animations** - Smooth animated transitions between selections
 - **Themeable** - Customize appearance via CSS custom properties

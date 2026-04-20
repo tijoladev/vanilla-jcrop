@@ -15,13 +15,19 @@
     "LICENSE"
   ],
   "keywords": [
+    "image",
+    "image-cropper",
+    "image-cropping",
+    "photo-cropper",
+    "cropper",
+    "cropping",
     "crop",
-    "image-crop",
-    "jcrop",
-    "web-component",
-    "custom-element",
-    "vanilla",
-    "no-jquery"
+    "javascript",
+    "js",
+    "vanilla-js",
+    "vanilla-jcrop",
+    "es6",
+    "web-component"
   ],
   "author": "tijoladev",
   "license": "MIT",
