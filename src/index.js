@@ -1,7 +1,7 @@
 import { SelectionManager } from './managers/SelectionManager.js';
 import { PreselectionManager } from './managers/PreselectionManager.js';
 import { DisplayManager } from './managers/DisplayManager.js';
-import { MIN_DIMENSION } from './utils/constants.js';
+import { MIN_DIMENSION, clamp } from './utils/constants.js';
 
 function scaleRect(rect, sx, sy) {
   const x = rect.x * sx;
@@ -411,6 +411,74 @@ export default class JCrop {
         this.displayManager[key] = this.options[key];
       }
     }
+
+    // If constraints or bounds changed, re-apply them to the active selection
+    // so it never silently violates its own configuration.
+    const adjustKeys = ['ratio', 'minWidth', 'minHeight', 'maxWidth', 'maxHeight', 'canvasWidth', 'canvasHeight'];
+    if (adjustKeys.some(k => newOptions[k] !== undefined)) {
+      this._adjustSelectionToConstraints();
+    }
+  }
+
+  /**
+   * Re-applies the current ratio, min/max dimensions and canvas bounds to
+   * the active selection (top-left anchored, shrinks to fit). Releases the
+   * selection if the new constraints are jointly infeasible.
+   * @private
+   */
+  _adjustSelectionToConstraints() {
+    const current = this.selectionManager.tellScaled();
+    if (current.w <= 0 || current.h <= 0) return;
+
+    const {
+      canvasWidth, canvasHeight,
+      ratio, minWidth, minHeight, maxWidth, maxHeight
+    } = this.options;
+
+    let { x, y } = current;
+    let w = current.w;
+    let h = current.h;
+
+    // 1. Shrink to fit canvas from the top-left (or shift if origin is out).
+    x = clamp(x, 0, Math.max(0, canvasWidth - MIN_DIMENSION));
+    y = clamp(y, 0, Math.max(0, canvasHeight - MIN_DIMENSION));
+    w = Math.min(w, canvasWidth - x);
+    h = Math.min(h, canvasHeight - y);
+
+    if (ratio) {
+      // 2a. Snap to ratio within the current w/h (shrink).
+      const hFromW = w / ratio;
+      const wFromH = h * ratio;
+      if (hFromW <= h) h = hFromW; else w = wFromH;
+
+      // 3a. Combine min/max with ratio. Projected min/max on width:
+      const minW = Math.max(minWidth, minHeight * ratio);
+      const maxW = Math.min(maxWidth, maxHeight * ratio, canvasWidth - x, (canvasHeight - y) * ratio);
+      if (minW > maxW) {
+        // No valid size exists — safer to release than to keep a lying rect.
+        this.selectionManager.release();
+        return;
+      }
+      w = clamp(w, minW, maxW);
+      h = w / ratio;
+    } else {
+      // 2b / 3b. Independent clamping on each axis.
+      w = clamp(w, minWidth, Math.min(maxWidth, canvasWidth - x));
+      h = clamp(h, minHeight, Math.min(maxHeight, canvasHeight - y));
+    }
+
+    // Nothing meaningful changed: skip to avoid spurious events.
+    const epsilon = 0.5;
+    if (
+      Math.abs(x - current.x) < epsilon
+      && Math.abs(y - current.y) < epsilon
+      && Math.abs(w - current.w) < epsilon
+      && Math.abs(h - current.h) < epsilon
+    ) {
+      return;
+    }
+
+    this.selectionManager.setSelect({ x, y, x2: x + w, y2: y + h });
   }
 
   /** @private */
