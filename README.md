@@ -279,10 +279,12 @@ Main differences:
 
 ## Browser Support
 
-VanillaJCrop works in all modern browsers:
-- Chrome/Edge 79+
-- Firefox 63+
-- Safari 13.1+
+VanillaJCrop targets modern browsers:
+- Chrome/Edge 88+
+- Firefox 89+
+- Safari 15+
+
+The lower bound is set by CSS `aspect-ratio`, used to shape the host from the image's natural dimensions so `max-width` and `max-height` on the host are both honoured. Other load-bearing features (Shadow DOM, CSS Custom Properties, `ResizeObserver`, Pointer Events) are all available in that range or earlier.
 
 ## Development
 

@@ -165,6 +165,13 @@ export class Renderer {
       img.onload = () => {
         img.onload = null;
         img.onerror = null;
+        if (img.naturalWidth === 0 || img.naturalHeight === 0) {
+          reject(new Error(
+            `Image has no intrinsic dimensions: ${src}. ` +
+            `For SVG sources, declare width/height or a viewBox attribute.`
+          ));
+          return;
+        }
         resolve({ width: img.naturalWidth, height: img.naturalHeight });
       };
 
